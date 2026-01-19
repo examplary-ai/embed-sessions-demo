@@ -1,5 +1,4 @@
-// window.baseUrl = 'https://api.examplary.ai'; // TODO: change this
-window.baseUrl = "http://localhost:3001"; // TODO: change this
+window.baseUrl = 'https://api.examplary.ai';
 
 // Create some vars we can use
 window.userId = "";
