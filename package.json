@@ -1,0 +1,12 @@
+{
+  "name": "@examplary/embed-sessions-demo",
+  "version": "1.0.0",
+  "description": "A simple example of how to use Examplary Embed Sessions.",
+  "license": "MIT",
+  "scripts": {
+    "start": "vite --open --port 5188"
+  },
+  "devDependencies": {
+    "vite": "^7.3.1"
+  }
+}

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exam Sessions Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Examplary Embed Sessions Demo</h1>
+      <p>
+        This is a simple example of how to use
+        <a href="https://developers.examplary.ai/embed-sessions"
+          >Examplary Embed Sessions</a
+        >.
+      </p>
+
+      <p>
+        Start by creating an API key on
+        <a href="https://app.examplary.ai/account/developer" target="_blank"
+          >this page</a
+        >, then paste it below.
+      </p>
+
+      <div class="input-group">
+        <label for="api-key-input">Enter your API Key:</label>
+        <input
+          type="text"
+          id="api-key-input"
+          placeholder="examp_..."
+          pattern="examp_[a-z0-9A-Z]{32}"
+          size="40"
+        />
+      </div>
+
+      <details id="step-1" open>
+        <summary>Step 1: create a user</summary>
+        <p>
+          We need a user to associate the session with. As an admin in your
+          workspace, you can create a new user:
+        </p>
+        <button id="create-user-button" onclick="createUser()">
+          Create user
+        </button>
+        <span id="create-user-result"></span>
+        <script>
+          // Note: In a real application, you do this server-side to keep your API key secret.
+          async function createUser() {
+            const response = await fetch(`${baseUrl}/users`, {
+              method: "POST",
+              body: JSON.stringify({
+                email: `user+${Date.now()}@example.com`,
+                name: "Demo User",
+              }),
+              headers: {
+                Authorization: apiKey,
+                "Content-Type": "application/json",
+              },
+            });
+
+            const data = await response.json();
+            userId = data.id;
+
+            document.querySelector("#create-user-result").textContent =
+              `Created user with ID ${data.id}`;
+            document.querySelector("#step-2").open = true;
+          }
+        </script>
+      </details>
+
+      <details id="step-2">
+        <summary>Step 2: create an embed session</summary>
+        <p>Now we can create an embed session for the user we just created:</p>
+        <button id="create-session-button" onclick="createEmbedSession()">
+          Create embed session
+        </button>
+        <span id="create-session-result"></span>
+        <script>
+          // Note: In a real application, you do this server-side to keep your API key secret.
+          async function createEmbedSession() {
+            if (!userId) {
+              return alert("Please create a user first.");
+            }
+
+            const response = await fetch(`${baseUrl}/embed-sessions`, {
+              method: "POST",
+              body: JSON.stringify({
+                flow: "generate-exam",
+                actor: userId,
+                presets: {
+                  subject: "Mathematics",
+                },
+                theme: {
+                  primaryColor: "#4f46e5",
+                  locale: "en",
+                },
+                metadata: {
+                  myUniqueIdentifier: "abc1234",
+                },
+                allowedOrigin: window.location.origin,
+              }),
+              headers: {
+                Authorization: apiKey,
+                "Content-Type": "application/json",
+              },
+            });
+
+            const data = await response.json();
+
+            document.querySelector("#create-session-result").innerHTML =
+              `Got embed session URL: <a href="${data.embedUrl}" target="_blank" class="url">${data.embedUrl}</a>`;
+            embedUrl = data.embedUrl;
+
+            document.querySelector("#step-3").open = true;
+          }
+        </script>
+      </details>
+
+      <details id="step-3">
+        <summary>Step 3: embed the session</summary>
+        <p>
+          Finally, we can embed the session in an iframe using the URL we just
+          received:
+        </p>
+        <button id="embed-session-button" onclick="embedSession()">
+          Embed session
+        </button>
+
+        <iframe width="100%" height="600"></iframe>
+
+        <p>
+          <em>Tip:</em> The Examplary UI looks even better in a modal window!
+        </p>
+
+        <script>
+          function embedSession() {
+            if (!embedUrl) {
+              return alert("Please create an embed session first.");
+            }
+            
+            document.querySelector("iframe").src = embedUrl;
+
+            document.querySelector("#step-4").open = true;
+          }
+        </script>
+      </details>
+
+      <details id="step-4">
+        <summary>Step 4: listen for events from the embed session</summary>
+        <p>
+          You can listen for events sent from the embed session using the
+          postMessage API. Events are shown in the developer console on the
+          right.
+        </p>
+        <p>
+          If in your use case <code>postMessage</code> is not suitable, you can
+          also set a <code>returnUrl</code> that the embed session will redirect
+          to after completion.
+        </p>
+        <script>
+          window.addEventListener("message", (event) => {
+            // Make sure the message is coming from a trusted origin
+            if (event.origin !== new URL(embedUrl).origin) return;
+            console.log(event);
+
+            logToConsole(
+              `\n\n❥ Received message from embed session:\n${JSON.stringify(event.data, null, 2)}`,
+            );
+          });
+        </script>
+      </details>
+    </main>
+
+    <aside>
+      <h4>Developer console</h4>
+      <pre id="console-output">This panel will show the request and response details for API calls.</pre>
+    </aside>
+
+    <script type="module" src="demo-helpers.js"></script>
+  </body>
+</html>
