@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Exam Sessions Demo</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
     <main>
@@ -138,7 +138,7 @@
             if (!embedUrl) {
               return alert("Please create an embed session first.");
             }
-            
+
             document.querySelector("iframe").src = embedUrl;
 
             document.querySelector("#step-4").open = true;
@@ -177,6 +177,6 @@
       <pre id="console-output">This panel will show the request and response details for API calls.</pre>
     </aside>
 
-    <script type="module" src="demo-helpers.js"></script>
+    <script type="module" src="assets/demo-helpers.js"></script>
   </body>
 </html>
