@@ -197,6 +197,7 @@
             const response = await fetch(
               `${baseUrl}/exams/${examId}/export/qti3-zip`,
               {
+                method: 'POST',
                 headers: {
                   Authorization: apiKey,
                 },
