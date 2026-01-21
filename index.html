@@ -169,6 +169,9 @@
             );
 
             if (event.data?.status === "completed") {
+              document.querySelectorAll("details").forEach((detail) => {
+                detail.open = false;
+              });
               document.querySelector("#step-5").open = true;
               examId = event.data.outputs.examId;
             }
@@ -197,7 +200,7 @@
             const response = await fetch(
               `${baseUrl}/exams/${examId}/export/qti3-zip`,
               {
-                method: 'POST',
+                method: "POST",
                 headers: {
                   Authorization: apiKey,
                 },
@@ -213,7 +216,9 @@
 
     <aside>
       <h4>Developer console</h4>
-      <pre id="console-output">This panel will show the request and response details for API calls.</pre>
+      <pre id="console-output">
+This panel will show the request and response details for API calls.</pre
+      >
     </aside>
 
     <script type="module" src="assets/demo-helpers.js"></script>
