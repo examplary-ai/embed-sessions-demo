@@ -1,8 +1,9 @@
-window.baseUrl = 'https://api.examplary.ai';
+window.baseUrl = "https://api.examplary.ai";
 
 // Create some vars we can use
 window.userId = "";
 window.embedUrl = "";
+window.examId = "";
 
 // Make sure the API key is stored in localStorage so you only have to enter it once.
 const apiKeyInput = document.querySelector("#api-key-input");

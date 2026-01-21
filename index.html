@@ -167,7 +167,45 @@
             logToConsole(
               `\n\n❥ Received message from embed session:\n${JSON.stringify(event.data, null, 2)}`,
             );
+
+            if (event.data?.status === "completed") {
+              document.querySelector("#step-5").open = true;
+              examId = event.data.outputs.examId;
+            }
           });
+        </script>
+      </details>
+
+      <details id="step-5">
+        <summary>Step 5: download QTI 3 package</summary>
+        <p>
+          After the user has completed the exam generation flow, you can fetch
+          the generated QTI 3 package using the API. You will need the
+          <code>examId</code> from the event data sent when the session is
+          completed.
+        </p>
+
+        <button id="download-qti-button" onclick="downloadQtiPackage()">
+          Download QTI 3 package
+        </button>
+        <script>
+          async function downloadQtiPackage() {
+            if (!examId) {
+              return alert("Please complete an exam generation first.");
+            }
+
+            const response = await fetch(
+              `${baseUrl}/exams/${examId}/export/qti3-zip`,
+              {
+                headers: {
+                  Authorization: apiKey,
+                },
+              },
+            );
+
+            const json = await response.json();
+            location.href = json.url;
+          }
         </script>
       </details>
     </main>
